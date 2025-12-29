@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateText, stepCountIs } from "ai";
+import { generateText, ModelMessage, stepCountIs } from "ai";
 import { openai } from "@ai-sdk/openai";
 import * as readline from "node:readline/promises";
 import { readFileTool } from "./tools/readFile.js";
@@ -11,11 +11,17 @@ async function main() {
     input: process.stdin,
     output: process.stdout,
   });
+  const messages: ModelMessage[] = [];
   while (true) {
     const prompt = await rl.question("Enter your prompt: ");
-    const response = await generateText({
+    if (prompt.toLowerCase() === "exit") {
+      console.log("Exiting...");
+      break;
+    }
+    messages.push({ role: "user", content: prompt });
+    const { response, text } = await generateText({
       model: openai("gpt-4.1-nano"),
-      prompt: [{ role: "user", content: prompt }],
+      messages,
       tools: { readFile: readFileTool },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
         // console.log("\n[Step] Text:", text);
@@ -24,8 +30,12 @@ async function main() {
       },
       stopWhen: stepCountIs(5),
     });
-    console.log("Response:", response.text);
+    messages.push(...response.messages);
+    // response.
+    console.log("\n[AI Response]:", text);
+    // console.log("\n[AI Response]:", response.messages);
   }
+  console.log("Goodbye!");
 }
 
 console.log("Starting the AI coding agent...");
