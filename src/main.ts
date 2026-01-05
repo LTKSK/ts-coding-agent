@@ -3,6 +3,8 @@ import { generateText, ModelMessage, stepCountIs } from "ai";
 import { openai } from "@ai-sdk/openai";
 import * as readline from "node:readline/promises";
 import { readFileTool } from "./tools/readFile.js";
+import { listFilesTool } from "./tools/listFiles.js";
+import { writeFileTool } from "./tools/writeFile.js";
 
 dotenv.config();
 
@@ -11,6 +13,7 @@ async function main() {
     input: process.stdin,
     output: process.stdout,
   });
+
   const messages: ModelMessage[] = [];
   while (true) {
     const prompt = await rl.question("Enter your prompt: ");
@@ -22,18 +25,22 @@ async function main() {
     const { response, text } = await generateText({
       model: openai("gpt-4.1-nano"),
       messages,
-      tools: { readFile: readFileTool },
+      tools: {
+        readFile: readFileTool,
+        listFiles: listFilesTool,
+        writeFile: writeFileTool,
+      },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
-        // console.log("\n[Step] Text:", text);
+        if (text.length === 0) return;
+        console.log("\n", text);
         // console.log("[Step] Tool calls:", toolCalls);
         // console.log("[Step] Tool results:", toolResults);
+        // console.log("-----\n");
       },
       stopWhen: stepCountIs(5),
     });
     messages.push(...response.messages);
-    // response.
-    console.log("\n[AI Response]:", text);
-    // console.log("\n[AI Response]:", response.messages);
+    console.log(`Answer: ${text}`);
   }
   console.log("Goodbye!");
 }
