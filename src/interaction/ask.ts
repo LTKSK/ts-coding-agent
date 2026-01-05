@@ -1,21 +1,13 @@
-import { createInterface } from "node:readline/promises";
+import { getReadline } from "./input.js";
 
 /**
- * ユーザーにファイル作成の許可を求める
+ * ユーザーにファイル作成・編集の許可を求める
  */
 export async function askUserPermission(question: string): Promise<boolean> {
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  try {
-    const answer = await rl.question(question);
-    return (
-      answer.toLowerCase().trim() === "yes" ||
-      answer.toLowerCase().trim() === "y"
-    );
-  } finally {
-    rl.close();
-  }
+  const rl = getReadline();
+  const answer = await rl.question(question);
+  return (
+    answer.toLowerCase().trim() === "yes" ||
+    answer.toLowerCase().trim() === "y"
+  );
 }

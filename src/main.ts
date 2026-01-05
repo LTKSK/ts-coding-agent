@@ -7,6 +7,7 @@ import { listFilesTool } from "./tools/listFiles.js";
 import { writeFileTool } from "./tools/writeFile.js";
 import { searchInDirectoryTool } from "./tools/searchInDirectory.js";
 import { editFileTool } from "./tools/editFile.js";
+import { initReadline } from "./interaction/input.js";
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ async function main() {
     input: process.stdin,
     output: process.stdout,
   });
+
+  // グローバルreadlineインターフェースを初期化
+  initReadline(rl);
 
   const messages: ModelMessage[] = [];
   while (true) {
