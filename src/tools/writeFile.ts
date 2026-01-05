@@ -2,29 +2,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createInterface } from "node:readline/promises";
-
-/**
- * ユーザーにファイル作成の許可を求める
- */
-async function askUserPermission(filePath: string): Promise<boolean> {
-  const rl = createInterface({
-    input: process.stdin,
-    output: undefined,
-  });
-
-  try {
-    const answer = await rl.question(
-      `ファイルを作成しますか？ ${filePath} (yes/no): `
-    );
-    return (
-      answer.toLowerCase().trim() === "yes" ||
-      answer.toLowerCase().trim() === "y"
-    );
-  } finally {
-    rl.close();
-  }
-}
+import { askUserPermission } from "../interaction/ask.js";
 
 export const writeFileTool = tool({
   description: "Writes content to a file at the specified path.",
@@ -59,7 +37,9 @@ export const writeFileTool = tool({
       }
 
       // ユーザーに許可を求める
-      const hasPermission = await askUserPermission(filePath);
+      const hasPermission = await askUserPermission(
+        `ファイルを作成しますか？ ${filePath} (yes/no): `
+      );
       if (!hasPermission) {
         return {
           ok: false,

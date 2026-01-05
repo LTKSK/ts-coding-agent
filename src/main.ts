@@ -6,6 +6,7 @@ import { readFileTool } from "./tools/readFile.js";
 import { listFilesTool } from "./tools/listFiles.js";
 import { writeFileTool } from "./tools/writeFile.js";
 import { searchInDirectoryTool } from "./tools/searchInDirectory.js";
+import { editFileTool } from "./tools/editFile.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ async function main() {
         readFile: readFileTool,
         listFiles: listFilesTool,
         writeFile: writeFileTool,
+        editFile: editFileTool,
         searchInDirectory: searchInDirectoryTool,
       },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
@@ -38,7 +40,7 @@ async function main() {
         console.log("[Step] Tool results:", toolResults);
         // console.log("-----\n");
       },
-      stopWhen: stepCountIs(5),
+      stopWhen: stepCountIs(10),
     });
     messages.push(...response.messages);
     console.log(`Answer: ${text}`);
