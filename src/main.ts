@@ -8,6 +8,7 @@ import { writeFileTool } from "./tools/writeFile.js";
 import { searchInDirectoryTool } from "./tools/searchInDirectory.js";
 import { editFileTool } from "./tools/editFile.js";
 import { initReadline } from "./interaction/input.js";
+import { systemPrompt } from "./prompts/system.js";
 
 dotenv.config();
 
@@ -20,7 +21,12 @@ async function main() {
   // グローバルreadlineインターフェースを初期化
   initReadline(rl);
 
-  const messages: ModelMessage[] = [];
+  const messages: ModelMessage[] = [
+    {
+      role: "system",
+      content: systemPrompt,
+    },
+  ];
   while (true) {
     const prompt = await rl.question("Enter your prompt: ");
     if (prompt.toLowerCase() === "exit") {
@@ -29,7 +35,7 @@ async function main() {
     }
     messages.push({ role: "user", content: prompt });
     const { response, text } = await generateText({
-      model: openai("gpt-4.1-nano"),
+      model: openai("gpt-4.1-mini"),
       messages,
       tools: {
         readFile: readFileTool,
@@ -44,7 +50,7 @@ async function main() {
         console.log("[Step] Tool results:", toolResults);
         // console.log("-----\n");
       },
-      stopWhen: stepCountIs(10),
+      stopWhen: stepCountIs(30),
     });
     messages.push(...response.messages);
     console.log(`Answer: ${text}`);
