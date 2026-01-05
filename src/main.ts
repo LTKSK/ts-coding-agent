@@ -5,6 +5,7 @@ import * as readline from "node:readline/promises";
 import { readFileTool } from "./tools/readFile.js";
 import { listFilesTool } from "./tools/listFiles.js";
 import { writeFileTool } from "./tools/writeFile.js";
+import { searchInDirectoryTool } from "./tools/searchInDirectory.js";
 
 dotenv.config();
 
@@ -29,12 +30,12 @@ async function main() {
         readFile: readFileTool,
         listFiles: listFilesTool,
         writeFile: writeFileTool,
+        searchInDirectory: searchInDirectoryTool,
       },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
-        if (text.length === 0) return;
         console.log("\n", text);
-        // console.log("[Step] Tool calls:", toolCalls);
-        // console.log("[Step] Tool results:", toolResults);
+        console.log("[Step] Tool calls:", toolCalls);
+        console.log("[Step] Tool results:", toolResults);
         // console.log("-----\n");
       },
       stopWhen: stepCountIs(5),

@@ -27,14 +27,22 @@ export const searchInDirectoryTool = tool({
   ]),
   execute: async ({ directoryPath, keyword }) => {
     try {
-      const files = await fs.readdir(directoryPath);
+      const entries = await fs.readdir(directoryPath);
       const matchingFiles: string[] = [];
 
-      for (const file of files) {
-        const filePath = `${directoryPath}/${file}`;
-        const content = await fs.readFile(filePath, "utf-8");
-        if (content.includes(keyword)) {
-          matchingFiles.push(filePath);
+      for (const entry of entries) {
+        const entryPath = `${directoryPath}/${entry}`;
+
+        // ファイルかディレクトリかをチェック
+        // const stats = await fs.stat(entryPath);
+        // if (!stats.isFile()) {
+        //   continue; // ディレクトリの場合はスキップ
+        // }
+
+        // // ファイルの内容を読み込んで検索
+        // const content = await fs.readFile(entryPath, "utf-8");
+        if (entry.includes(keyword)) {
+          matchingFiles.push(entryPath);
         }
       }
 
