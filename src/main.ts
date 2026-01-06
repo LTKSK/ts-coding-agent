@@ -7,6 +7,7 @@ import { listFilesTool } from "./tools/listFiles.js";
 import { writeFileTool } from "./tools/writeFile.js";
 import { searchInDirectoryTool } from "./tools/searchInDirectory.js";
 import { editFileTool } from "./tools/editFile.js";
+import { copyFileTool } from "./tools/copyFile.js";
 import { initReadline } from "./interaction/input.js";
 import { systemPrompt } from "./prompts/system.js";
 
@@ -43,6 +44,7 @@ async function main() {
         writeFile: writeFileTool,
         editFile: editFileTool,
         searchInDirectory: searchInDirectoryTool,
+        copyFile: copyFileTool,
       },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
         console.log("\n", text);
