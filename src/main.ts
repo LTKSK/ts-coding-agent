@@ -35,7 +35,7 @@ async function main() {
     }
     messages.push({ role: "user", content: prompt });
     const { response, text } = await generateText({
-      model: openai("gpt-4.1-mini"),
+      model: openai("gpt-4.1-nano"),
       messages,
       tools: {
         readFile: readFileTool,
@@ -50,6 +50,7 @@ async function main() {
         console.log("[Step] Tool results:", toolResults);
         // console.log("-----\n");
       },
+      // ぐるぐる回すには結構なstep数が必要なので暫定30に設定
       stopWhen: stepCountIs(30),
     });
     messages.push(...response.messages);
