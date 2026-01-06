@@ -10,3 +10,7 @@ cp ./.env.example ./.env
 npm i
 npm run dev
 ```
+
+## 備考
+
+memoryなどは未対応
