@@ -22,6 +22,7 @@ async function main() {
   // グローバルreadlineインターフェースを初期化
   initReadline(rl);
 
+  // 会話履歴を保持する配列
   const messages: ModelMessage[] = [
     {
       role: "system",
@@ -36,7 +37,7 @@ async function main() {
     }
     messages.push({ role: "user", content: prompt });
     const { response, text } = await generateText({
-      model: openai("gpt-4.1-nano"),
+      model: openai("gpt-4.1-mini"),
       messages,
       tools: {
         readFile: readFileTool,
@@ -47,12 +48,14 @@ async function main() {
         copyFile: copyFileTool,
       },
       onStepFinish: ({ text, toolCalls, toolResults }) => {
+        // デバッグ用というかわかりやすさのため。不要ならコメントアウトして良い
         console.log("\n", text);
         console.log("[Step] Tool calls:", toolCalls);
         console.log("[Step] Tool results:", toolResults);
         // console.log("-----\n");
       },
       // ぐるぐる回すには結構なstep数が必要なので暫定30に設定
+      // この設定がないとtool呼び出しした後に解答まで進まなくなってしまう
       stopWhen: stepCountIs(30),
     });
     messages.push(...response.messages);
