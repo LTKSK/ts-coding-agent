@@ -31,13 +31,9 @@ export class Manager {
 
   /**
    * Closes the memory manager
+   * Note: Does not end the current session - it remains active for next startup
    */
   close(): void {
-    // End current session if active
-    if (this.currentSession?.isActive()) {
-      this.endSession();
-    }
-
     this.dbManager.close();
   }
 
@@ -123,6 +119,13 @@ export class Manager {
     };
 
     return this.repository.addMessage(message);
+  }
+
+  /**
+   * Gets active session for a project path
+   */
+  getActiveSession(projectPath: string): Session | null {
+    return this.repository.getActiveSession(projectPath);
   }
 
   /**
